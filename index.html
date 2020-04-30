@@ -11,6 +11,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<!-- Load Stripe.js on your website. -->
+                <script src="https://js.stripe.com/v3"></script>
 	</head>
 	<body class="is-preload">
 
@@ -112,6 +114,15 @@
 							<ul class="actions special">
 								<li><a href="#" class="button">More</a></li>
 							</ul>
+							     <!-- Create a button that your customers click to complete their purchase. Customize the styling to suit your branding. -->
+                                                             <button
+                                                             style="background-color:#6772E5;color:#FFF;padding:8px 12px;border:0;border-radius:4px;font-size:1em"
+                                                             id="checkout-button-sku_HBh13l8VOgcYhb"
+                                                             role="link"
+                                                             >
+                                                             Checkout
+                                                             </button>
+							     <div id="error-message"></div>
 						</div>
 					</div>
 				</div>
@@ -470,6 +481,36 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+		             <script>
+                             (function() {
+                             var stripe = Stripe('pk_live_gdo9j3hN7DHc3yINds3XDY7p00ASoEp089');
+
+                             var checkoutButton = document.getElementById('checkout-button-sku_HBh13l8VOgcYhb');
+                             checkoutButton.addEventListener('click', function () {
+                             // When the customer clicks on the button, redirect
+                             // them to Checkout.
+                             stripe.redirectToCheckout({
+                             items: [{sku: 'sku_HBh13l8VOgcYhb', quantity: 1}],
+
+                             // Do not rely on the redirect to the successUrl for fulfilling
+                             // purchases, customers may not always reach the success_url after
+                             // a successful payment.
+                             // Instead use one of the strategies described in
+                             // https://stripe.com/docs/payments/checkout/fulfillment
+                             successUrl: 'http://co.ojedavidea.fr/success',
+                             cancelUrl: 'http://co.ojedavidea.fr/canceled',
+                             })
+                             .then(function (result) {
+                             if (result.error) {
+                             // If `redirectToCheckout` fails due to a browser or network
+                             // error, display the localized error message to your customer.
+                             var displayError = document.getElementById('error-message');
+                             displayError.textContent = result.error.message;
+                             }
+                             });
+                             });
+                             })();
+                        </script>
 
 	</body>
 </html>
